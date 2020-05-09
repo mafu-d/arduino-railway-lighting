@@ -10,6 +10,8 @@ const int AM_LED = 11; // LED indicating morning
 const int PM_LED = 12; // LED indicating afternoon
 const int BUTTON = 13; // Push button to cycle through times of day
 
+const int TIME_FACTOR = 6000; // How long time takes
+
 // The Charlieplexed pin pattern for each LED
 const int LEDS = 12;
 int leds[LEDS][PINS] = {
@@ -63,89 +65,93 @@ void control() {
 }
 
 void night() {
-    // Museum off
-    states[0] = false;
+    // Museum off eventually
+    if (states[0] && random(6 * TIME_FACTOR) == 0) {
+        states[0] = false;
+    }
     // Engine shed off eventually
-    if (states[1] && random(5000) == 0) {
+    if (states[1] && random(5 * TIME_FACTOR) == 0) {
         states[1] = false;
     }
     // Booking hall off when everything else in Frontington is off
-    if (!states[0] && !states[3] && !relays[1] && !relays[2] && random(2000) == 0) {
+    if (!states[0] && !states[3] && !relays[1] && !relays[2] && random(2 * TIME_FACTOR) == 0) {
         states[2] = false;
     }
-    // Model railway off
-    states[3] = false;
+    // Model railway off eventually
+    if (states[3] && random(5 * TIME_FACTOR) == 0) {
+        states[3] = false;
+    }
     // Backwoods waiting room off eventually
-    if (states[4] && random(5000) == 0) {
+    if (states[4] && random(5 * TIME_FACTOR) == 0) {
         states[4] = false;
     }
     // Frontington SB off after engine shed
-    if (states[5] && !states[1] && random(2000) == 0) {
+    if (states[5] && !states[1] && random(2 * TIME_FACTOR) == 0) {
         states[5] = false;
     }
     // House lights mostly off
-    for (int i = 6; i < 10; i++) {
-        if (!states[i] && random(10000) == 0) {
+    for (int i = 6; i <= 10; i++) {
+        if (!states[i] && random(10 * TIME_FACTOR) == 0) {
             states[i] = true;
         }
-        if (states[i] && random(3000) == 0) {
+        if (states[i] && random(4 * TIME_FACTOR) == 0) {
             states[i] = false;
         }
     }
     // Street lights on
     relays[0] = true;
     // Car park off when nearly everything else is off
-    if (relays[1] && !relays[2] && !states[0] && !states[3] && random(2000) == 0) {
+    if (relays[1] && !relays[2] && !states[0] && !states[3] && random(2 * TIME_FACTOR) == 0) {
         relays[1] = false;
     }
     // Frontington platform off eventually
-    if (relays[2] && !states[3] && random(2000) == 0) {
+    if (relays[2] && !states[3] && random(2 * TIME_FACTOR) == 0) {
         relays[2] = false;
     }
 }
 
 void morning() {
     // Museum on after booking hall
-    if (!states[0] && states[2] && random(3000) == 0) {
+    if (!states[0] && states[2] && random(3 * TIME_FACTOR) == 0) {
         states[0] = true;
     }
     // Engine shed on pretty early
-    if (!states[1] && random(2000) == 0) {
+    if (!states[1] && random(2 * TIME_FACTOR) == 0) {
         states[1] = true;
     }
     // Booking hall on pretty early
-    if (!states[2] && random(3000) == 0) {
+    if (!states[2] && random(3 * TIME_FACTOR) == 0) {
         states[2] = true;
     }
     // Model railway on after booking hall
-    if (!states[3] && states[2] && random(3000) == 0) {
+    if (!states[3] && states[2] && random(3 * TIME_FACTOR) == 0) {
         states[3] = true;
     }
     // Backwoods on eventually
-    if (!states[4] && random(6000) == 0) {
+    if (!states[4] && random(6 * TIME_FACTOR) == 0) {
         states[4] = true;
     }
     // Frontington SB on after engine shed
-    if (!states[5] && states[1] && random(2000) == 0) {
+    if (!states[5] && states[1] && random(2 * TIME_FACTOR) == 0) {
         states[5] = true;
     }
     // House lights mostly on
-    for (int i = 6; i < 10; i++) {
-        if (!states[i] && random(1000) == 0) {
+    for (int i = 6; i <= 10; i++) {
+        if (!states[i] && random(1 * TIME_FACTOR) == 0) {
             states[i] = true;
         }
-        if (states[i] && random(8000) == 0) {
+        if (states[i] && random(10 * TIME_FACTOR) == 0) {
             states[i] = false;
         }
     }
     // Street lights on
     relays[0] = true;
     // Car park on after booking hall
-    if (!relays[1] && states[2] && random(2000) == 0) {
+    if (!relays[1] && states[2] && random(2 * TIME_FACTOR) == 0) {
         relays[1] = true;
     }
     // Frontington platform on after booking hall
-    if (!relays[2] && states[2] && random(3000) == 0) {
+    if (!relays[2] && states[2] && random(3 * TIME_FACTOR) == 0) {
         relays[2] = true;
     }
 }
@@ -160,69 +166,65 @@ void day() {
     // Model railway on
     states[3] = true;
     // Backwoods off
-    if (states[4] && random(2000) == 0) {
+    if (states[4] && random(2 * TIME_FACTOR) == 0) {
         states[4] = false;
     }
     // Frontington SB off
-    if (states[5] && random(2000) == 0) {
+    if (states[5] && random(2 * TIME_FACTOR) == 0) {
         states[5] = false;
     }
     // House lights off
-    for (int i = 6; i < 10; i++) {
-        if (states[i] && random(2000) == 0) {
+    for (int i = 6; i <= 10; i++) {
+        if (states[i] && random(2 * TIME_FACTOR) == 0) {
             states[i] = false;
         }
     }
     // Street lights off
     relays[0] = false;
     // Car park off
-    if (relays[1] && random(2000) == 0) {
+    if (relays[1] && random(2 * TIME_FACTOR) == 0) {
         relays[1] = false;
     }
     // Frontington platform off
-    if (relays[2] && random(2000) == 0) {
+    if (relays[2] && random(2 * TIME_FACTOR) == 0) {
         relays[2] = false;
     }
 }
 
 void evening() {
-    // Museum off eventually
-    if (states[0] && random(6000) == 0) {
-        states[0] = false;
-    }
+    // Museum on
+    states[0] = true;
     // Engine shed on
     states[1] = true;
     // Booking hall on
     states[2] = true;
-    // Model railway off eventually
-    if (states[3] && random(5000) == 0) {
-        states[3] = false;
-    }
+    // Model railway on
+    states[3] = true;
     // Backwoods on
-    if (!states[4] && random(4000) == 0) {
+    if (!states[4] && random(4 * TIME_FACTOR) == 0) {
         states[4] = true;
     }
     // Frontington SB on
-    if (!states[5] && random(1000) == 0) {
+    if (!states[5] && random(1 * TIME_FACTOR) == 0) {
         states[5] = true;
     }
     // House lights mostly on
-    for (int i = 6; i < 10; i++) {
-        if (!states[i] && random(2000) == 0) {
+    for (int i = 6; i <= 10; i++) {
+        if (!states[i] && random(2 * TIME_FACTOR) == 0) {
             states[i] = true;
         }
-        if (states[i] && random(8000) == 0) {
+        if (states[i] && random(10 * TIME_FACTOR) == 0) {
             states[i] = false;
         }
     }
     // Street lights on
     relays[0] = true;
     // Car park on
-    if (!relays[1] && random(2000) == 0) {
+    if (!relays[1] && random(2 * TIME_FACTOR) == 0) {
         relays[1] = true;
     }
     // Frontington platform on
-    if (!relays[2] && random(1000) == 0) {
+    if (!relays[2] && random(1 * TIME_FACTOR) == 0) {
         relays[2] = true;
     }
 }
@@ -238,20 +240,11 @@ void setup() {
     pinMode(BUTTON, INPUT);
     digitalWrite(AM_LED, HIGH);
     digitalWrite(PM_LED, HIGH);
-    Serial.begin(9600);
-    Serial.println("Started");
 }
 
 // Run indefinitely
 void loop() {
-    // delay(2); // Pause ever so slightly to cater for slow response of some LEDs
-    for (int i = 0; i < LEDS; i++) {
-        Serial.print(states[i]);
-    }
-    for (int i = 0; i < 3; i++) {
-        Serial.print(relays[i]);
-    }
-    Serial.println();
+    delay(1); // Pause ever so slightly to cater for slow response of some LEDs
 
     // Advance time of day if button is pressed
     // int buttonPress = digitalRead(BUTTON);
@@ -269,9 +262,9 @@ void loop() {
     control();
 
     // Set relays
-    digitalWrite(STREET_RELAY, (relays[0] ? HIGH : LOW));
-    digitalWrite(CAR_PARK_RELAY, (relays[1] ? HIGH : LOW));
-    digitalWrite(FRONTINGTON_RELAY, (relays[2] ? HIGH : LOW));
+    digitalWrite(STREET_RELAY, (relays[0] ? LOW : HIGH));
+    digitalWrite(CAR_PARK_RELAY, (relays[1] ? LOW : HIGH));
+    digitalWrite(FRONTINGTON_RELAY, (relays[2] ? LOW : HIGH));
 
     // Turn all pins off
     for (size_t i = 0; i < PINS; i++)
@@ -291,12 +284,11 @@ void loop() {
         else {
             // Otherwise, set it high or low to power an LED
             pinMode((PIN_OFFSET + i), OUTPUT);
-            // if (leds[position][i] == POSITIVE) {
-            //     digitalWrite((PIN_OFFSET + i), HIGH);
-            // } else {
-            //     digitalWrite((PIN_OFFSET + i), LOW);
-            // }
-            digitalWrite((PIN_OFFSET + i), (((PIN_OFFSET + i) == POSITIVE) ? HIGH : LOW));
+            if (leds[position][i] == POSITIVE) {
+                digitalWrite((PIN_OFFSET + i), HIGH);
+            } else {
+                digitalWrite((PIN_OFFSET + i), LOW);
+            }
         }
     }
 
